@@ -17,7 +17,7 @@ $envFilePath = Join-Path -Path $rootDir -ChildPath ".env"
 if (Test-Path $envFilePath) {
     Get-Content $envFilePath | ForEach-Object {
         if ($_ -match "^(.*?)=(.*)$") {
-            [System.Environment]::SetEnvironmentVariable($matches[1], $matches[2])
+            [System.Environment]::SetEnvironmentVariable($matches[1], $matches[2].Trim('"'))
             Write-Output "Loaded environment variable: $($matches[1])"
         }
     }
@@ -54,7 +54,8 @@ Write-Output 'Running "pnpm generate"'
 # we do this by setting the AZURE_CLIENT_ID to an empty string before running the command
 $env:AZURE_CLIENT_ID = ""
 Try {
-    pnpm generate
+    npm install pnpm
+    pnpm install
     Write-Output "Command 'pnpm generate' completed successfully"
 } Catch {
     Write-Error "Error: 'pnpm generate' failed"
