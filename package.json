@@ -29,7 +29,7 @@
     "dotenv": "^16.3.1",
     "formdata-node": "^6.0.3",
     "got": "^14.4.1",
-    "llamaindex": "file:app/lib/llamaindex-0.8.21.tgz",
+    "llamaindex": "^0.8.31",
     "lucide-react": "^0.294.0",
     "marked": "^14.1.2",
     "next": "^14.2.4",
