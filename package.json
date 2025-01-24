@@ -31,7 +31,7 @@
     "llamaindex": "^0.8.31",
     "lucide-react": "^0.294.0",
     "marked": "^14.1.2",
-    "next": "^14.2.4",
+    "next": "^14.2.21",
     "papaparse": "^5.4.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
