@@ -15,7 +15,6 @@
     "@azure/identity": "^4.5.0",
     "@azure/search-documents": "^12.1.0",
     "@llamaindex/chat-ui": "0.0.5",
-    "@llamaindex/core": "file:app/lib/llamaindex-core-0.4.10.tgz",
     "@radix-ui/react-collapsible": "^1.0.3",
     "@radix-ui/react-hover-card": "^1.0.7",
     "@radix-ui/react-progress": "^1.1.0",

@@ -9,7 +9,6 @@ RUN npm install -g pnpm@8.14.1 && \
 WORKDIR /app
 
 COPY package.json package-lock.* ./
-ADD app/lib ./app/lib
 RUN pnpm install --ignore-scripts
 RUN pnpm add sharp
 

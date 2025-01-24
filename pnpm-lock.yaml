@@ -20,9 +20,6 @@ importers:
       '@llamaindex/chat-ui':
         specifier: 0.0.5
         version: 0.0.5(@types/react-dom@18.3.1)(@types/react@18.3.12)(encoding@0.1.13)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@8.1.1)
-      '@llamaindex/core':
-        specifier: file:app/lib/llamaindex-core-0.4.10.tgz
-        version: file:app/lib/llamaindex-core-0.4.10.tgz(@aws-crypto/sha256-js@5.2.0)(@huggingface/transformers@3.1.0)(gpt-tokenizer@2.7.0)(js-tiktoken@1.0.15)(pathe@1.1.2)(tiktoken@1.0.17)
       '@radix-ui/react-collapsible':
         specifier: ^1.0.3
         version: 1.1.1(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -892,33 +889,8 @@ packages:
   '@llamaindex/core@0.4.20':
     resolution: {integrity: sha512-IeZgtyyZk0tWuvF/HYeBFWPS0R6VH3uXFIWErESdNe22BUANtScSfhe+kubN3IFjhl5Wf1+ozqtyJCfNe4TW6A==}
 
-  '@llamaindex/core@file:app/lib/llamaindex-core-0.4.10.tgz':
-    resolution: {integrity: sha512-unX9vr7yL0YATwxgy8zwKtjrqpt3uDIEffBvK4TX+4liLrv/C6WE1RgGnJl/k3vvWY6JY/P8/nAk3zXKenMqmg==, tarball: file:app/lib/llamaindex-core-0.4.10.tgz}
-    version: 0.4.10
-
   '@llamaindex/deepinfra@0.0.29':
     resolution: {integrity: sha512-Kz6WVwNwJuB+rJDVXBB6G0LUTzVGpZWEbRXFx+D8MKvBF6XNJT8Omm/V93umzpvLGJQ6c29tSPTFDHrGZF7i5w==}
-
-  '@llamaindex/env@0.1.20':
-    resolution: {integrity: sha512-t7l/YQFa+qrtNlShyTtfculJNM8ji7Y2KAlH22W5YvSQGEtC74yBAwaE+kk0VXPlZk7etAbw64Dc++dTp6h4EQ==}
-    peerDependencies:
-      '@aws-crypto/sha256-js': ^5.2.0
-      '@huggingface/transformers': ^3.0.2
-      gpt-tokenizer: ^2.5.0
-      js-tiktoken: ^1.0.12
-      pathe: ^1.1.2
-      tiktoken: '*'
-    peerDependenciesMeta:
-      '@aws-crypto/sha256-js':
-        optional: true
-      '@huggingface/transformers':
-        optional: true
-      js-tiktoken:
-        optional: true
-      pathe:
-        optional: true
-      tiktoken:
-        optional: true
 
   '@llamaindex/env@0.1.25':
     resolution: {integrity: sha512-wtvAhIAbRhEB66Zp8rMRUpnT1DRbEIyUFH9Ob82lw1nrT4vC0Snb5Seu2tzqfL6Oqu6W4Ea/8mphYwYMEphFdA==}
@@ -6294,21 +6266,6 @@ snapshots:
       - pathe
       - tiktoken
 
-  '@llamaindex/core@file:app/lib/llamaindex-core-0.4.10.tgz(@aws-crypto/sha256-js@5.2.0)(@huggingface/transformers@3.1.0)(gpt-tokenizer@2.7.0)(js-tiktoken@1.0.15)(pathe@1.1.2)(tiktoken@1.0.17)':
-    dependencies:
-      '@llamaindex/env': 0.1.20(@aws-crypto/sha256-js@5.2.0)(@huggingface/transformers@3.1.0)(gpt-tokenizer@2.7.0)(js-tiktoken@1.0.15)(pathe@1.1.2)(tiktoken@1.0.17)
-      '@types/node': 22.10.1
-      magic-bytes.js: 1.10.0
-      zod: 3.23.8
-      zod-to-json-schema: 3.23.5(zod@3.23.8)
-    transitivePeerDependencies:
-      - '@aws-crypto/sha256-js'
-      - '@huggingface/transformers'
-      - gpt-tokenizer
-      - js-tiktoken
-      - pathe
-      - tiktoken
-
   '@llamaindex/deepinfra@0.0.29(@aws-crypto/sha256-js@5.2.0)(@huggingface/transformers@3.1.0)(encoding@0.1.13)(gpt-tokenizer@2.7.0)(js-tiktoken@1.0.15)(pathe@1.1.2)(tiktoken@1.0.17)(zod@3.23.8)':
     dependencies:
       '@llamaindex/core': 0.4.20(@aws-crypto/sha256-js@5.2.0)(@huggingface/transformers@3.1.0)(gpt-tokenizer@2.7.0)(js-tiktoken@1.0.15)(pathe@1.1.2)(tiktoken@1.0.17)
@@ -6323,16 +6280,6 @@ snapshots:
       - pathe
       - tiktoken
       - zod
-
-  '@llamaindex/env@0.1.20(@aws-crypto/sha256-js@5.2.0)(@huggingface/transformers@3.1.0)(gpt-tokenizer@2.7.0)(js-tiktoken@1.0.15)(pathe@1.1.2)(tiktoken@1.0.17)':
-    dependencies:
-      gpt-tokenizer: 2.7.0
-    optionalDependencies:
-      '@aws-crypto/sha256-js': 5.2.0
-      '@huggingface/transformers': 3.1.0
-      js-tiktoken: 1.0.15
-      pathe: 1.1.2
-      tiktoken: 1.0.17
 
   '@llamaindex/env@0.1.25(@aws-crypto/sha256-js@5.2.0)(@huggingface/transformers@3.1.0)(gpt-tokenizer@2.7.0)(js-tiktoken@1.0.15)(pathe@1.1.2)(tiktoken@1.0.17)':
     dependencies:
