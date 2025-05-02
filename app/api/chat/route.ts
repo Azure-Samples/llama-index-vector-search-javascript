@@ -13,16 +13,22 @@ import { createCallbackManager } from "./llamaindex/streaming/events";
 import { generateNextQuestions } from "./llamaindex/streaming/suggestion";
 
 initObservability();
-initSettings();
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+
+async function setVectorStoreInstance() {
+  if (!(Settings as any).__AzureAISearchVectorStoreInstance__) {
+    await initSettings();
+  }
+}
 
 export async function POST(request: NextRequest) {
   // Init Vercel AI StreamData and timeout
   const vercelStreamData = new StreamData();
 
   try {
+    await setVectorStoreInstance();
     const body = await request.json();
     const { messages, data }: { messages: Message[]; data?: any } = body;
     if (!isValidMessages(messages)) {
