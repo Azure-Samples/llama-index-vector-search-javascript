@@ -47,6 +47,7 @@ This template, the application code and configuration it contains, has been buil
   - [Deploying again](#deploying-again)
 - [Running the development server](#running-the-development-server)
   - [Using Docker (optional)](#using-docker-optional)
+- [Running application at no cost](#running-application-at-no-cost)
 - [Using the app](#using-the-app)
 - [Clean up](#clean-up)
 - [Guidance](#guidance)
@@ -80,6 +81,8 @@ However, you can try the [Azure pricing calculator](https://azure.com/e/a87a169b
 * Azure Monitor: Pay-as-you-go tier. Costs based on data ingested. [Pricing](https://azure.microsoft.com/pricing/details/monitor/)
 
 To reduce costs, you can switch to free SKUs for various services, but those SKUs have limitations.
+
+To try out the example at no cost refer [Running application at no cost](#running-application-at-no-cost).
 
 To avoid unnecessary costs, remember to take down your app if it's no longer in use,
 either by deleting the resource group in the Portal or running `azd down`.
@@ -220,6 +223,37 @@ npm run generate
 ```
 
 Third, run the development server:
+
+```
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+
+## Running application at no cost
+This approach uses free GitHub Models endpoint to access GPT models and embedding, and free Azure AI Search endpoint for data indexing and retrieval.
+
+First, install the project dependencies:
+
+```
+npm install
+```
+
+Create a GitHub personal access token (refer [Managing your personal access tokens](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens) for creating tokens). In the root of the project, create a `.env` file and provide values for below environment variables(refer `.env.example`):
+
+```
+GITHUB_TOKEN=
+LLAMAINDEX_STORAGE_CACHE_DIR=
+```
+
+Next, generate the embeddings of the documents in the [./data](./data) directory:
+
+```
+npm run generate
+```
+
+Finally, run the development server:
 
 ```
 npm run dev

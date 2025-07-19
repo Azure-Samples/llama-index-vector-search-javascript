@@ -10,6 +10,12 @@ import { getDataSource } from "./index";
 import { generateFilters } from "./queryFilter";
 import { createTools } from "./tools";
 
+const createRetrieverOptions = () => {
+  return process.env.GITHUB_TOKEN
+    ? { mode: "hybrid" as any }
+    : { mode: "semantic_hybrid" as any, similarityTopK: 5 };
+};
+
 export async function createChatEngine(documentIds?: string[], params?: any) {
   const tools: BaseToolWithCall[] = [];
 
@@ -20,12 +26,7 @@ export async function createChatEngine(documentIds?: string[], params?: any) {
     tools.push(
       new QueryEngineTool({
         queryEngine: index.asQueryEngine({
-          retriever: index.asRetriever({
-            // FIXME: Cannot read properties of undefined (reading 'SEMANTIC_HYBRID')
-            // mode: VectorStoreQueryMode.SEMANTIC_HYBRID,
-            mode: "semantic_hybrid" as any,
-            similarityTopK: 5,
-          }),
+          retriever: index.asRetriever(createRetrieverOptions()),
           preFilters: generateFilters(documentIds || [])
         }),
         metadata: {

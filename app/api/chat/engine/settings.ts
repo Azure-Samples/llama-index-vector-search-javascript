@@ -4,6 +4,7 @@ import {
   ManagedIdentityCredential,
 } from "@azure/identity";
 import {
+  AzureKeyCredential,
   KnownAnalyzerNames,
   KnownVectorSearchAlgorithmKind,
 } from "@azure/search-documents";
@@ -14,24 +15,134 @@ import { OpenAI, OpenAIEmbedding, Settings } from "llamaindex";
 import {
   AzureAISearchVectorStore,
   IndexManagement,
-} from "llamaindex/vector-store/azure/AzureAISearchVectorStore";
+ } from "llamaindex/vector-store/AzureAISearchVectorStore"
+
+import { createSearchService } from "./createIndex";
 
 const CHUNK_SIZE = 512;
 const CHUNK_OVERLAP = 20;
 const AZURE_COGNITIVE_SERVICES_SCOPE =
   "https://cognitiveservices.azure.com/.default";
+export const MODELS_ENDPOINT = "https://models.inference.ai.azure.com";
 
-export const initSettings = async () => {
-  if (
-    !process.env.AZURE_OPENAI_CHAT_DEPLOYMENT ||
-    !process.env.AZURE_OPENAI_EMBEDDING_DEPLOYMENT
-  ) {
-    throw new Error(
-      "'AZURE_OPENAI_CHAT_DEPLOYMENT' and 'AZURE_OPENAI_EMBEDDING_DEPLOYMENT' env variables must be set.",
-    );
+async function createAzureAISearchOptions(
+  azureAiSearchVectorStoreAuth: {
+    key?: string;
+    credential?: DefaultAzureCredential | ManagedIdentityCredential;
+  },
+  githubToken?: string
+) {
+  const commonOptions = {
+    serviceApiVersion: "2024-09-01-preview",
+    indexManagement: IndexManagement.CREATE_IF_NOT_EXISTS,
+    languageAnalyzer: KnownAnalyzerNames.EnLucene,
+    vectorAlgorithmType: KnownVectorSearchAlgorithmKind.ExhaustiveKnn,
+  };
+
+  if (!githubToken) {
+    return {
+      ...azureAiSearchVectorStoreAuth,
+      endpoint: process.env.AZURE_AI_SEARCH_ENDPOINT,
+      indexName: process.env.AZURE_AI_SEARCH_INDEX ?? "llamaindex-vector-search",
+      idFieldKey: process.env.AZURE_AI_SEARCH_ID_FIELD ?? "id",
+      chunkFieldKey: process.env.AZURE_AI_SEARCH_CHUNK_FIELD ?? "chunk",
+      embeddingFieldKey: process.env.AZURE_AI_SEARCH_EMBEDDING_FIELD ?? "embedding",
+      metadataStringFieldKey: process.env.AZURE_AI_SEARCH_METADATA_FIELD ?? "metadata",
+      docIdFieldKey: process.env.AZURE_AI_SEARCH_DOC_ID_FIELD ?? "doc_id",
+      embeddingDimensionality: Number(process.env.AZURE_AI_SEARCH_EMBEDDING_DIMENSIONALITY) ?? 1536,
+      ...commonOptions,
+    };
   }
 
+  const searchService = await createSearchService();
+  if (!searchService) {
+    throw new Error("Failed to retrieve search service details.");
+  }
+
+  return {
+    credential: new AzureKeyCredential(githubToken),
+    endpoint: searchService.endpoint,
+    indexName: searchService.indexName,
+    idFieldKey: "chunk_id",
+    chunkFieldKey: "chunk",
+    embeddingFieldKey: "text_vector",
+    metadataStringFieldKey: "parent_id",
+    docIdFieldKey: "chunk_id",
+    embeddingDimensionality: 1536,
+    ...commonOptions,
+  };
+}
+
+function createEmbeddingParams(
+  openAiConfig: {
+    apiKey?: string;
+    deployment?: string;
+    model?: string;
+    azure?: Record<string, string | CallableFunction>;
+  },
+  githubToken?: string
+) {
+  if (!githubToken) {
+    return {
+      ...openAiConfig,
+      model: process.env.AZURE_OPENAI_EMBEDDING_DEPLOYMENT,
+      azure: {
+        ...openAiConfig.azure,
+        deployment: process.env.AZURE_OPENAI_EMBEDDING_DEPLOYMENT,
+      },
+    };
+  }
+
+  return {
+    model: "text-embedding-3-small",
+    apiKey: githubToken,
+    additionalSessionOptions: {
+      baseURL: MODELS_ENDPOINT,
+    },
+  };
+}
+
+function createOpenAiParams(
+  openAiConfig: {
+    apiKey?: string;
+    deployment?: string;
+    model?: string;
+    azure?: Record<string, string | CallableFunction>;
+  },
+  githubToken?: string
+) {
+  if (!githubToken) {
+    return {
+      ...openAiConfig,
+      model: process.env.AZURE_OPENAI_CHAT_DEPLOYMENT,
+    };
+  }
+
+  return {
+    apiKey: githubToken,
+    additionalSessionOptions: {
+      baseURL: MODELS_ENDPOINT
+    },
+    model: "gpt-4o",
+  }
+}
+
+function validateEnvironmentVariables() {
+  const areOpenAiChatAndEmbeddingDeploymentConfigured =
+    process.env.AZURE_OPENAI_CHAT_DEPLOYMENT && process.env.AZURE_OPENAI_EMBEDDING_DEPLOYMENT;
+  const isGithubTokenConfigured = process.env.GITHUB_TOKEN;
+  if (!areOpenAiChatAndEmbeddingDeploymentConfigured && !isGithubTokenConfigured) {
+    throw new Error(
+      "Environment variables 'AZURE_OPENAI_CHAT_DEPLOYMENT' and 'AZURE_OPENAI_EMBEDDING_DEPLOYMENT' must be set, or a valid GITHUB_TOKEN must be provided."
+    );
+  }
+}
+
+export const initSettings = async () => {
+  validateEnvironmentVariables();
+  
   let credential;
+  const githubToken = process.env.GITHUB_TOKEN;
   const azureAiSearchVectorStoreAuth: {
     key?: string;
     credential?: DefaultAzureCredential | ManagedIdentityCredential;
@@ -72,7 +183,9 @@ export const initSettings = async () => {
     );
     openAiConfig.azure = {
       azureADTokenProvider,
+      ...(process.env.AZURE_OPENAI_CHAT_DEPLOYMENT && {
       deployment: process.env.AZURE_OPENAI_CHAT_DEPLOYMENT,
+      }),
     };
 
     azureAiSearchVectorStoreAuth.credential = credential;
@@ -86,21 +199,11 @@ export const initSettings = async () => {
   }
 
   // configure LLM model
-  Settings.llm = new OpenAI({
-    ...openAiConfig,
-    model: process.env.AZURE_OPENAI_CHAT_DEPLOYMENT,
-  });
+  Settings.llm = new OpenAI(createOpenAiParams(openAiConfig, githubToken));
   console.log({ openAiConfig });
 
   // configure embedding model
-  Settings.embedModel = new OpenAIEmbedding({
-    ...openAiConfig,
-    model: process.env.AZURE_OPENAI_EMBEDDING_DEPLOYMENT,
-    azure: {
-      ...openAiConfig.azure,
-      deployment: process.env.AZURE_OPENAI_EMBEDDING_DEPLOYMENT,
-    }
-  });
+  Settings.embedModel = new OpenAIEmbedding(createEmbeddingParams(openAiConfig, githubToken));
 
   Settings.chunkSize = CHUNK_SIZE;
   Settings.chunkOverlap = CHUNK_OVERLAP;
@@ -108,37 +211,8 @@ export const initSettings = async () => {
   // FIXME: find an elegant way to share the same instance across the ingestion and
   // generation pipelines
 
-  const endpoint = process.env.AZURE_AI_SEARCH_ENDPOINT;
-  const indexName =
-    process.env.AZURE_AI_SEARCH_INDEX ?? "llamaindex-vector-search";
-  const idFieldKey = process.env.AZURE_AI_SEARCH_ID_FIELD ?? "id";
-  const chunkFieldKey = process.env.AZURE_AI_SEARCH_CHUNK_FIELD ?? "chunk";
-  const embeddingFieldKey =
-    process.env.AZURE_AI_SEARCH_EMBEDDING_FIELD ?? "embedding";
-  const metadataStringFieldKey =
-    process.env.AZURE_AI_SEARCH_METADATA_FIELD ?? "metadata";
-  const docIdFieldKey = process.env.AZURE_AI_SEARCH_DOC_ID_FIELD ?? "doc_id";
-
+  const azureAiSearchOptions = await createAzureAISearchOptions(azureAiSearchVectorStoreAuth, githubToken);
   console.log("Initializing Azure AI Search Vector Store");
 
-  (Settings as any).__AzureAISearchVectorStoreInstance__ =
-    new AzureAISearchVectorStore({
-      // Use either a key or a credential based on the environment
-      ...azureAiSearchVectorStoreAuth,
-      endpoint,
-      indexName,
-      idFieldKey,
-      chunkFieldKey,
-      embeddingFieldKey,
-      metadataStringFieldKey,
-      docIdFieldKey,
-      serviceApiVersion: "2024-09-01-preview",
-      // FIXME: import IndexManagement.CREATE_IF_NOT_EXISTS from 'llamaindex'
-      // indexManagement: IndexManagement.CREATE_IF_NOT_EXISTS,
-      indexManagement: "CreateIfNotExists" as IndexManagement,
-      embeddingDimensionality: Number(process.env.AZURE_AI_SEARCH_EMBEDDING_DIMENSIONALITY) ?? 1536,
-      languageAnalyzer: KnownAnalyzerNames.EnLucene,
-      // store vectors on disk
-      vectorAlgorithmType: KnownVectorSearchAlgorithmKind.ExhaustiveKnn,
-    });
+  (Settings as any).__AzureAISearchVectorStoreInstance__ = new AzureAISearchVectorStore(azureAiSearchOptions);
 };
