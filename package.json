@@ -35,6 +35,7 @@
     "papaparse": "^5.4.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "replicate": "^1.0.1",
     "supports-color": "^8.1.1",
     "tailwind-merge": "^2.1.0",
     "tiktoken": "^1.0.15",
