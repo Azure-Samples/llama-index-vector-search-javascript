@@ -6,3 +6,5 @@ README.md
 .next
 docker
 .git
+.env*.local
+.azure

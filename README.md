@@ -45,6 +45,8 @@ This template, the application code and configuration it contains, has been buil
   - [Local environment](#local-environment)
 - [Deploying](#deploying)
   - [Deploying again](#deploying-again)
+- [Authentication](#authentication)
+  - [Turn on sign-in for your deployment](#turn-on-sign-in-for-your-deployment)
 - [Running the development server](#running-the-development-server)
   - [Using Docker (optional)](#using-docker-optional)
 - [Running application at no cost](#running-application-at-no-cost)
@@ -203,6 +205,33 @@ If you've changed the infrastructure files ([`infra`](./infra/) folder or [`azur
 ```shell
 azd up
 ```
+
+## Authentication
+
+Every API route (`/api/chat`, `/api/chat/upload`, `/api/chat/config`, `/api/chat/config/llamacloud`, `/api/files/*`) checks the caller before it reads files, touches the index, or calls Azure OpenAI. The `AUTH_MODE` environment variable controls the check:
+
+| `AUTH_MODE` | Behavior |
+| ----------- | -------- |
+| _unset_     | `npm run dev` allows anonymous access so local development keeps working. `npm start` and the container image reject every API request with `401`. |
+| `easyauth`  | Requires the `X-MS-CLIENT-PRINCIPAL-ID` header that [Azure Container Apps built-in authentication](https://learn.microsoft.com/azure/container-apps/authentication) sets for signed-in users. Only set this when built-in authentication is enabled and requires sign-in. Container Apps strips that header from client requests only when built-in authentication is on. |
+| `anonymous` | No authentication. Don't use this on a public endpoint. It's only for local testing or when another gateway authenticates every request. |
+
+### Turn on sign-in for your deployment
+
+A fresh `azd up` deploys an app whose API returns `401` until you turn on sign-in:
+
+1. In the Azure portal, open the container app in the `rg-<env-name>` resource group.
+2. Go to **Settings > Authentication > Add identity provider**, pick **Microsoft**, and let it create a new app registration. Keep **Require authentication** and **HTTP 302 Found redirect**.
+3. Tell the app to trust the signed-in user headers:
+
+   ```shell
+   az containerapp list --resource-group rg-<env-name> --query "[].name" -o tsv
+   az containerapp update --name <container-app-name> --resource-group rg-<env-name> --set-env-vars AUTH_MODE=easyauth
+   ```
+
+`azd provision` and `azd up` reset the container's environment variables, so run step 3 again after either one. The authentication settings from step 2 stay in place.
+
+Set `AUTH_MODE` on the container app, not in `.env`. The deployment copies `.env` into the container image, so an `AUTH_MODE` line there applies in Azure whenever the container app doesn't set its own value. To run the container locally, pass `-e AUTH_MODE=anonymous` to `docker run`.
 
 ## Running the development server
 
