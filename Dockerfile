@@ -3,13 +3,13 @@
 # Use full image because we need node-gyp to build native dependencies
 FROM node:20-alpine AS build
 
-RUN npm install -g pnpm@8.14.1 && \
+RUN npm install -g pnpm@9.15.9 && \
     npm cache clean --force
 
 WORKDIR /app
 
-COPY package.json package-lock.* ./
-RUN pnpm install --ignore-scripts
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile --ignore-scripts
 RUN pnpm add sharp
 
 # Build the application

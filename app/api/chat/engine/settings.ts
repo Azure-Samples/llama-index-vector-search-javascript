@@ -15,7 +15,7 @@ import { OpenAI, OpenAIEmbedding, Settings } from "llamaindex";
 import {
   AzureAISearchVectorStore,
   IndexManagement,
- } from "llamaindex/vector-store/AzureAISearchVectorStore"
+ } from "llamaindex/vector-store/azure/AzureAISearchVectorStore"
 
 import { createSearchService } from "./createIndex";
 

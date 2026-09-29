@@ -80,6 +80,9 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.3.1(react@18.3.1)
+      replicate:
+        specifier: ^1.0.1
+        version: 1.0.1
       supports-color:
         specifier: ^8.1.1
         version: 8.1.1
