@@ -61,7 +61,7 @@ importers:
         version: 14.4.5
       llamaindex:
         specifier: ^0.8.31
-        version: 0.8.31(@aws-sdk/client-sts@3.699.0)(@aws-sdk/credential-providers@3.699.0(@aws-sdk/client-sso-oidc@3.699.0(@aws-sdk/client-sts@3.699.0)))(@huggingface/transformers@3.1.0)(encoding@0.1.13)(supports-color@8.1.1)(tiktoken@1.0.17)(tree-sitter@0.22.1)(typescript@5.7.2)(web-tree-sitter@0.24.4)
+        version: 0.8.31(@aws-sdk/client-sts@3.699.0)(@aws-sdk/credential-providers@3.699.0(@aws-sdk/client-sso-oidc@3.699.0(@aws-sdk/client-sts@3.699.0)))(@huggingface/transformers@3.1.0)(debug@4.3.7(supports-color@8.1.1))(encoding@0.1.13)(supports-color@8.1.1)(tiktoken@1.0.17)(tree-sitter@0.22.1)(typescript@5.7.2)(web-tree-sitter@0.24.4)
       lucide-react:
         specifier: ^0.294.0
         version: 0.294.0(react@18.3.1)
@@ -498,9 +498,6 @@ packages:
 
   '@emnapi/runtime@1.11.3':
     resolution: {integrity: sha512-Xz4Tpyki7XyrpbUK1jR1AhdAdaXyhhY4lZ3neLodmhpuWfy2PAQN5B46sAiU4liOXGLkHypn/qU+jvfWSCYYLA==}
-
-  '@emnapi/runtime@1.3.1':
-    resolution: {integrity: sha512-kEBmG8KyqtxJZv+ygbEim+KCGtIq1fC22Ms3S4ziXmYKm8uyoLX0MHONVKwp+9opg390VaKRNt4a7A9NwmpNhw==}
 
   '@esbuild/aix-ppc64@0.23.1':
     resolution: {integrity: sha512-6VhYk1diRqrhBAqpJEdjASR/+WVRtfjpqKuNw11cLiaWpAT/Uu+nokB+UJnevzy/P9C/ty6AOe0dwueMrGh/iQ==}
@@ -4281,8 +4278,8 @@ packages:
     peerDependencies:
       postcss: ^8.2.14
 
-  postcss-selector-parser@6.1.2:
-    resolution: {integrity: sha512-Q8qQfPiZ+THO/3ZrOrO0cJJKfpYCagtMUkXbnEfmgUjwXg6z/WBeOyS9APBBPCTSiDV+s4SwQGu8yFsiMRIudg==}
+  postcss-selector-parser@6.1.4:
+    resolution: {integrity: sha512-bIoJLOmjCO1S9XdY/DcnR5hJxvrDir1PbGChrzXG3vw0/FOliy/fA3dmdhQ441kah4gKv+TwckGzex6wNS5cnQ==}
     engines: {node: '>=4'}
 
   postcss-value-parser@4.2.0:
@@ -6093,11 +6090,6 @@ snapshots:
       tslib: 2.8.1
     optional: true
 
-  '@emnapi/runtime@1.3.1':
-    dependencies:
-      tslib: 2.8.1
-    optional: true
-
   '@esbuild/aix-ppc64@0.23.1':
     optional: true
 
@@ -6420,7 +6412,7 @@ snapshots:
 
   '@img/sharp-wasm32@0.33.5':
     dependencies:
-      '@emnapi/runtime': 1.3.1
+      '@emnapi/runtime': 1.11.3
     optional: true
 
   '@img/sharp-wasm32@0.35.4':
@@ -8011,9 +8003,9 @@ snapshots:
 
   axe-core@4.10.2: {}
 
-  axios@1.7.8:
+  axios@1.7.8(debug@4.3.7(supports-color@8.1.1)):
     dependencies:
-      follow-redirects: 1.15.9
+      follow-redirects: 1.15.9(debug@4.3.7(supports-color@8.1.1))
       form-data: 4.0.1
       proxy-from-env: 1.1.0
     transitivePeerDependencies:
@@ -8389,8 +8381,7 @@ snapshots:
 
   detect-libc@2.0.3: {}
 
-  detect-libc@2.1.2:
-    optional: true
+  detect-libc@2.1.2: {}
 
   detect-node-es@1.1.0: {}
 
@@ -8894,7 +8885,9 @@ snapshots:
 
   fn.name@1.1.0: {}
 
-  follow-redirects@1.15.9: {}
+  follow-redirects@1.15.9(debug@4.3.7(supports-color@8.1.1)):
+    optionalDependencies:
+      debug: 4.3.7(supports-color@8.1.1)
 
   for-each@0.3.3:
     dependencies:
@@ -9590,7 +9583,7 @@ snapshots:
 
   lines-and-columns@1.2.4: {}
 
-  llamaindex@0.8.31(@aws-sdk/client-sts@3.699.0)(@aws-sdk/credential-providers@3.699.0(@aws-sdk/client-sso-oidc@3.699.0(@aws-sdk/client-sts@3.699.0)))(@huggingface/transformers@3.1.0)(encoding@0.1.13)(supports-color@8.1.1)(tiktoken@1.0.17)(tree-sitter@0.22.1)(typescript@5.7.2)(web-tree-sitter@0.24.4):
+  llamaindex@0.8.31(@aws-sdk/client-sts@3.699.0)(@aws-sdk/credential-providers@3.699.0(@aws-sdk/client-sso-oidc@3.699.0(@aws-sdk/client-sts@3.699.0)))(@huggingface/transformers@3.1.0)(debug@4.3.7(supports-color@8.1.1))(encoding@0.1.13)(supports-color@8.1.1)(tiktoken@1.0.17)(tree-sitter@0.22.1)(typescript@5.7.2)(web-tree-sitter@0.24.4):
     dependencies:
       '@anthropic-ai/sdk': 0.32.1(encoding@0.1.13)
       '@aws-crypto/sha256-js': 5.2.0
@@ -9642,7 +9635,7 @@ snapshots:
       pathe: 1.1.2
       rake-modified: 1.0.8
       weaviate-client: 3.2.4(encoding@0.1.13)
-      wikipedia: 2.1.2
+      wikipedia: 2.1.2(debug@4.3.7(supports-color@8.1.1))
       wink-nlp: 2.3.1
       zod: 3.23.8
     transitivePeerDependencies:
@@ -10509,9 +10502,9 @@ snapshots:
   postcss-nested@6.2.0(postcss@8.4.49):
     dependencies:
       postcss: 8.4.49
-      postcss-selector-parser: 6.1.2
+      postcss-selector-parser: 6.1.4
 
-  postcss-selector-parser@6.1.2:
+  postcss-selector-parser@6.1.4:
     dependencies:
       cssesc: 3.0.0
       util-deprecate: 1.0.2
@@ -10950,8 +10943,7 @@ snapshots:
 
   semver@7.6.3: {}
 
-  semver@7.8.5:
-    optional: true
+  semver@7.8.5: {}
 
   set-blocking@2.0.0:
     optional: true
@@ -10988,8 +10980,8 @@ snapshots:
   sharp@0.33.5:
     dependencies:
       color: 4.2.3
-      detect-libc: 2.0.3
-      semver: 7.6.3
+      detect-libc: 2.1.2
+      semver: 7.8.5
     optionalDependencies:
       '@img/sharp-darwin-arm64': 0.33.5
       '@img/sharp-darwin-x64': 0.33.5
@@ -11275,7 +11267,7 @@ snapshots:
       postcss-js: 4.0.1(postcss@8.4.49)
       postcss-load-config: 4.0.2(postcss@8.4.49)
       postcss-nested: 6.2.0(postcss@8.4.49)
-      postcss-selector-parser: 6.1.2
+      postcss-selector-parser: 6.1.4
       resolve: 1.22.8
       sucrase: 3.35.0
     transitivePeerDependencies:
@@ -11761,9 +11753,9 @@ snapshots:
       string-width: 4.2.3
     optional: true
 
-  wikipedia@2.1.2:
+  wikipedia@2.1.2(debug@4.3.7(supports-color@8.1.1)):
     dependencies:
-      axios: 1.7.8
+      axios: 1.7.8(debug@4.3.7(supports-color@8.1.1))
       infobox-parser: 3.6.4
     transitivePeerDependencies:
       - debug
